@@ -1,0 +1,5 @@
+post dictionary token
+header : auth
+jwt token -> past
+redux -> store jwt token, standard in react.
+
