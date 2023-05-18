@@ -2,13 +2,12 @@ package com.example.security.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //provide 2 endpoints allow us to create/register account, auth user
 @RestController
+// allow http://localhost:8081 to access this url
+@CrossOrigin(origins = "http://localhost:8081") // run npm with > http-server -p 8081
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {

@@ -13,11 +13,11 @@ import java.util.Map;
 @RequestMapping("/api/v1/test")
 public class TestController {
     @GetMapping
-    public ResponseEntity<String> testfunc(@RequestHeader(value="authorization") String auth){
-        Base64.Decoder decoder = Base64.getUrlDecoder();
+    public ResponseEntity<String> testfunc(){ // @RequestHeader(value="authorization") String auth
+        /*Base64.Decoder decoder = Base64.getUrlDecoder();
         String[] chunks = auth.split("\\.");
         String payload = new String(decoder.decode(chunks[1]));
-        System.out.println(payload);
+        System.out.println(payload);*/
         return ResponseEntity.ok("test success.");
     }
 }
