@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
+    private String homeTeam;
+    private String awayTeam;
     private String Type;
     private String subType;
     private Integer amount;

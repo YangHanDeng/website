@@ -348,7 +348,7 @@ public class Predictor {
         double AAS_meangoal = teamStatsService.MeanGoalAllAway();
         double ADS_meanloss = teamStatsService.MeanGoalAllHome();
 
-        double betting_small = 1000000;
+        double betting_small = 1000000; //select sum() from order where order.type = 'bigsmall' and order.subtype = 'big' and order.hometeam=hometeam and order.awayteam=awayteam
         double betting_big = 508945;
 
         int[] home_scorecnt = teamStatsService.CountDiffGoal(homeTeam);

@@ -15,6 +15,7 @@ public class AuthenticationController {
     //endpoint for register
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse>register(@RequestBody RegisterRequest request){
+        System.out.println(request);
         return ResponseEntity.ok(service.register(request));
     }
     //endpoint for authentication
