@@ -24,8 +24,8 @@ public class User implements UserDetails { //should sync with auth/RegisterReque
     @Id
     @GeneratedValue
     private Integer id;
-    private String firstname;
-    private String lastname;
+    private String username;
+    private String realName;
     private String email;
     private String password;
     private Integer age;

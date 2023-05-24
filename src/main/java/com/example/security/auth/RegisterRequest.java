@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequest {
     //fields are same as /user/User
-    private String firstname;
-    private String lastname;
+    private String username;
+    private String realName;
     private String email;
     private String password;
     private Integer age;

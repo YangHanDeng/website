@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -34,11 +35,18 @@ public class OrderService {
 
         if(!validOrder(orderRequest)) return false;// verify order
         var order = Order.builder().email(email)
+                .homeTeam(orderRequest.getHomeTeam())
+                .awayTeam(orderRequest.getAwayTeam())
                 .Type(orderRequest.getType())
                 .subType(orderRequest.getSubType())
                 .amount(orderRequest.getAmount()).build();
         orderRepository.save(order);
         return true;
+    }
+    public List<Order> getUserOrder(String auth){
+        String email = extractEmailFromAuth(auth);//verify user
+        userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+        return orderRepository.findOrderByEmail(email);
     }
 
 }

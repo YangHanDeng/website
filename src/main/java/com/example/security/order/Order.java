@@ -20,6 +20,8 @@ public class Order {
     @GeneratedValue
     private Integer id;
     private String email;
+    private String homeTeam;
+    private String awayTeam;
     private String Type;
     private String subType;
     private Integer amount;

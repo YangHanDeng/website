@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class OrderRequest {
     private String homeTeam;
     private String awayTeam;
-    private String Type;
+    private String type;
     private String subType;
     private Integer amount;
 }

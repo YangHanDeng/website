@@ -4,6 +4,8 @@ import com.example.security.user.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/v1/order")
 public class OrderController {
@@ -18,7 +20,11 @@ public class OrderController {
     @Autowired
     public OrderController(OrderService orderService){this.orderService=orderService;}
     @PostMapping("/newOrder")
-    public void editUser(@RequestHeader(value="authorization") String auth, @RequestBody OrderRequest orderRequest){
+    public void newOrder(@RequestHeader(value="authorization") String auth, @RequestBody OrderRequest orderRequest){
         orderService.addOrder(auth, orderRequest);
+    }
+    @GetMapping("/MyOrder")
+    public List<Order> getUserOrder(@RequestHeader(value="authorization") String auth){
+        return orderService.getUserOrder(auth);
     }
 }

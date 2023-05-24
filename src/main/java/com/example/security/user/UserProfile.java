@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
-    private String firstname;
-    private String lastname;
+    private String username;
+    private String realName;
     private String email;
     private Integer age;
     private String address;

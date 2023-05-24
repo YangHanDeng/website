@@ -38,7 +38,7 @@ public class UserService {
     public UserProfile getUserFromAuth(String auth) {
         String email = extractEmailFromAuth(auth);
         User u = getUserByEmail(email);
-        UserProfile up = new UserProfile(u.getFirstname(),u.getLastname(),u.getEmail(),u.getAge(),u.getAddress(),u.getPhone());
+        UserProfile up = new UserProfile(u.getUsername(),u.getRealName(),u.getEmail(),u.getAge(),u.getAddress(),u.getPhone());
         return up;
     }
 
@@ -46,11 +46,11 @@ public class UserService {
     public void editUser(String auth, UserProfile up) {
         String email = extractEmailFromAuth(auth);
         User u = getUserByEmail(email);
-        if(up.getFirstname() != null && up.getFirstname() != u.getFirstname()){
-            u.setFirstname(up.getFirstname());
+        if(up.getUsername() != null && up.getUsername() != u.getUsername()){
+            u.setUsername(up.getUsername());
         }
-        if(up.getLastname() != null && up.getLastname() != u.getLastname()){
-            u.setLastname(up.getLastname());
+        if(up.getRealName() != null && up.getRealName() != u.getRealName()){
+            u.setRealName(up.getRealName());
         }
         if(up.getEmail() != null && up.getEmail() != u.getEmail()){
             u.setEmail(up.getEmail());

@@ -24,8 +24,8 @@ public class AuthenticationService {
             throw new IllegalStateException("email used");
         });
         //create user
-        var user = User.builder().firstname(request.getFirstname())
-                .lastname(request.getLastname())
+        var user = User.builder().username(request.getUsername())
+                .realName(request.getRealName())
                 .email(request.getEmail())
                 .password(pwdencoder.encode(request.getPassword()))//encode pwd bf save 2 db
                 .age(request.getAge())
