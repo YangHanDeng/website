@@ -21,6 +21,7 @@ public class OrderController {
     public OrderController(OrderService orderService){this.orderService=orderService;}
     @PostMapping("/newOrder")
     public void newOrder(@RequestHeader(value="authorization") String auth, @RequestBody OrderRequest orderRequest){
+        System.out.println(orderRequest + " "+ auth);
         orderService.addOrder(auth, orderRequest);
     }
     @GetMapping("/MyOrder")

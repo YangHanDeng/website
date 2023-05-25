@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -46,7 +47,8 @@ public class OrderService {
     public List<Order> getUserOrder(String auth){
         String email = extractEmailFromAuth(auth);//verify user
         userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
-        return orderRepository.findOrderByEmail(email);
+        List<Order> empty = new ArrayList<>();
+        return orderRepository.findOrderByEmail(email).orElse(empty);
     }
 
 }

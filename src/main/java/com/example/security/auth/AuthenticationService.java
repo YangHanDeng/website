@@ -25,7 +25,7 @@ public class AuthenticationService {
         });
         //create user
         var user = User.builder().username(request.getUsername())
-                .realName(request.getRealName())
+                .realName(request.getRealname())
                 .email(request.getEmail())
                 .password(pwdencoder.encode(request.getPassword()))//encode pwd bf save 2 db
                 .age(request.getAge())
