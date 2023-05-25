@@ -25,7 +25,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/v1/auth/**").permitAll() //** Ant-style path patterns, matches zero or more 'directories' in a path
                 .requestMatchers("/api/v1/teams/**").permitAll()
                 .requestMatchers("/api/v1/test/**").permitAll()
-                .anyRequest().authenticated() //other requests should be authenticated
+                .anyRequest().permitAll() //other requests should be authenticated
                 .and() //add new configuration
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

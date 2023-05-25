@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 //provide 2 endpoints allow us to create/register account, auth user
 @RestController
 // allow http://localhost:8081 to access this url
-@CrossOrigin(origins = "http://localhost:8081") // run npm with > http-server -p 8081
+//@CrossOrigin(origins = "http://localhost:8081") // run npm with > http-server -p 8081
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
