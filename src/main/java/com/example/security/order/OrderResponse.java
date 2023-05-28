@@ -13,5 +13,5 @@ import java.util.List;
 
 public class OrderResponse {
     private String name;
-    private List<Order> purchaseHistory;
+    private List<OrderHistory> purchaseHistory;
 }
