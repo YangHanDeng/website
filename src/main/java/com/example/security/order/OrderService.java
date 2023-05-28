@@ -1,6 +1,7 @@
 package com.example.security.order;
 
 
+import com.example.security.user.User;
 import com.example.security.user.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,13 @@ public class OrderService {
         orderRepository.save(order);
         return true;
     }
-    public List<Order> getUserOrder(String auth){
+    public OrderResponse getUserOrder(String auth){
         String email = extractEmailFromAuth(auth);//verify user
-        userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+        User u = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
         List<Order> empty = new ArrayList<>();
-        return orderRepository.findOrderByEmail(email).orElse(empty);
+        OrderResponse orderResponse = new OrderResponse(u.getUsername(), orderRepository.findOrderByEmail(email).orElse(empty));
+
+        return orderResponse;
     }
 
 }

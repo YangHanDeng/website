@@ -18,7 +18,7 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/MyOrder")
-    public ResponseEntity<List<Order>> getUserOrder(@RequestHeader(value="authorization") String auth){
+    public ResponseEntity<OrderResponse> getUserOrder(@RequestHeader(value="authorization") String auth){
         return ResponseEntity.ok(orderService.getUserOrder(auth));
     }
 }
