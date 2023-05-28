@@ -142,8 +142,8 @@ public class Predictor {
         return rank_ratio;
     }
 
-    private static int pastTenWinLosePt(int win_game, int draw, int total_game){
-        int loss_game = total_game - win_game - draw;
+    private static int pastTenWinLosePt(int win_game, int draw){
+        int loss_game = 10 - win_game - draw;
         return win_game * 2 + draw - loss_game; // points
     }
 
@@ -371,8 +371,8 @@ public class Predictor {
         int awayWLPoint = totalGameWinLosePoint(awayTeamWin,awayTeamDraw,awayTeamTotalGame);
         double[] score_ratio = gamescore_ratio(homeWLPoint, awayWLPoint);
         double[] rank_ratio = game_rank_ratio(rank_home, rank_away);
-        int pastTenWinLoseHomePt = pastTenWinLosePt(homePastTenWin, homePastTenDraw, 10);
-        int pastTenWinLoseAwayPt = pastTenWinLosePt(awayPastTenWin, awayPastTenDraw, 10);
+        int pastTenWinLoseHomePt = pastTenWinLosePt(homePastTenWin, homePastTenDraw);
+        int pastTenWinLoseAwayPt = pastTenWinLosePt(awayPastTenWin, awayPastTenDraw);
         double[] pastTenWLRatio = pastTenWinLoseRatioCmp(pastTenWinLoseHomePt, pastTenWinLoseAwayPt);
         double draw_rate = draw_rate(homeTeamDraw,homeTeamTotalGame,homePastTenDraw,awayPastTenDraw,awayTeamDraw,awayTeamTotalGame);
         double[] finalWLRatio = win_rate(score_ratio[0], score_ratio[1], rank_ratio[0], rank_ratio[1],
@@ -385,13 +385,6 @@ public class Predictor {
         double draw_bet = WDLBetAmount[1];
         double loss_bet = WDLBetAmount[2];
         double[] big_small = big_or_small(team_goal[0], team_goal[1], betting_small, betting_big);
-    /*
-        System.out.println("bet rate for win is :" + win_bet +
-                ", bet rate for draw is :" + draw_bet + ", bet rate for loss is :" + loss_bet);
-        System.out.println("for the predicted game point" + big_small[0] + ", the betting ratio for small is:" + big_small[1]
-                + ", the betting ratio for big is:" + big_small[2]);
-
-     */
         int home_yellowcard = teamStatsService.TotalYellowCard(homeTeam);
         int home_redcard = teamStatsService.TotalRedCard(homeTeam);
         int away_yellowcard = teamStatsService.TotalYellowCard(awayTeam);
@@ -408,10 +401,6 @@ public class Predictor {
         double redYellowPt = redYellowPtCal(allgame_mean, pastten_mean);
         //System.out.println(redYellowPt);
         double[] redYellowSmallBig = redYellowBetting(redYellowSmallAmount, redYellowBigAmount);
-        /*System.out.println("the betting ratio for small is: " + redYellowSmallBig[0] +
-                ", and the betting ratio for big is: " + redYellowSmallBig[1]);
-
-         */
         int[] homeCornerCnt = teamStatsService.CountCorner(homeTeam);
         int[] awayCornerCnt = teamStatsService.CountCorner(awayTeam);
         double[] homeProbCorner = new double[homeCornerCnt.length];
@@ -419,14 +408,137 @@ public class Predictor {
         double[][] cornerAllScoreProb = cornerProbCal(homeCornerCnt, awayCornerCnt, homeProbCorner, awayProbCorner);
         double[] cornerProbGamePoisson = cornerRateCal(cornerAllScoreProb);
         double[] cornerOdds = corner_betting_algo(cornerProbGamePoisson);
-        /*
-        System.out.println("betting odd for home corner is: " + cornerOdds[0]
-                + ", betting odd for draw of corner is: " + cornerOdds[1]
-                + ", betting odd for away corner is: " + cornerOdds[2]);
-
-         */
-        PredictedResult pr = new PredictedResult(homeTeam, awayTeam, win_bet, draw_bet, loss_bet, big_small[0], big_small[1], big_small[2], redYellowPt,
+        return new PredictedResult(homeTeam, awayTeam, win_bet, draw_bet, loss_bet, big_small[0], big_small[1], big_small[2], redYellowPt,
                 redYellowSmallBig[0], redYellowSmallBig[1], cornerOdds[0], cornerOdds[1], cornerOdds[2]);
-        return pr;
+    }
+
+    public WinLoseResult predictWinLose(TeamStatsService teamStatsService, TeamService teamService, String homeTeam, String awayTeam) {
+        int homeTeamWin = teamStatsService.CountWinByName(homeTeam);
+        int homeTeamDraw = teamStatsService.CountDrawByName(homeTeam);
+        int homeTeamTotalGame = teamStatsService.CountTotalGameByName(homeTeam);
+        int awayTeamWin = teamStatsService.CountWinByName(awayTeam);
+        int awayTeamDraw = teamStatsService.CountDrawByName(awayTeam);
+        int awayTeamTotalGame = teamStatsService.CountTotalGameByName(awayTeam);
+        int rank_home = teamService.GetRankByTeamName(homeTeam);
+        int rank_away = teamService.GetRankByTeamName(awayTeam);
+        List<TeamStats> HomeLast10 = teamStatsService.getLast10Stat(homeTeam);
+        int homePastTenWin = teamStatsService.CountLast10WinByName(HomeLast10, homeTeam);
+        int homePastTenDraw = teamStatsService.CountLast10Draw(HomeLast10);
+        List<TeamStats> AwayLast10 = teamStatsService.getLast10Stat(homeTeam);
+        int awayPastTenWin = teamStatsService.CountLast10WinByName(AwayLast10, awayTeam);
+        int awayPastTenDraw = teamStatsService.CountLast10Draw(AwayLast10);
+
+        double awayTeamAwayWinCnt = teamStatsService.CountAwayGameDrewByName(awayTeam);
+        double awayTeamAwayDrawCnt = teamStatsService.CountAwayGameWonByName(awayTeam);
+        double awayTeamAwayGameCnt = teamStatsService.CountAwayGameByName(awayTeam);
+        double homeTeamHomeWinCnt = teamStatsService.CountHomeGameWonByName(homeTeam);
+        double homeTeamHomeDrawCnt = teamStatsService.CountHomeGameDrewByName(homeTeam);
+        double homeTeamHomeGameCnt = teamStatsService.CountHomeGameByName(homeTeam);
+
+        //we need to have an algorithm for predict expected goal for different teams
+
+        int[] home_pastgoal = teamStatsService.ListOfHomeGoal(homeTeam);
+        int[] away_pastgoal = teamStatsService.ListOfAwayGoal(awayTeam);
+        int[] home_pastloss = teamStatsService.ListOfHomeLoss(homeTeam);
+        int[] away_pastloss = teamStatsService.ListOfAwayLoss(awayTeam);
+
+        double HAS_meangoal = teamStatsService.MeanGoalAllHome();
+        double HDS_meanloss = teamStatsService.MeanGoalAllAway();
+        double AAS_meangoal = teamStatsService.MeanGoalAllAway();
+        double ADS_meanloss = teamStatsService.MeanGoalAllHome();
+
+        int[] home_scorecnt = teamStatsService.CountDiffGoal(homeTeam);
+        // the above means that home team had 0 goal for 8 matches, 1 goal for 8 matches, 2 goal for 6 matches....
+        int[] away_scorecnt = teamStatsService.CountDiffGoal(awayTeam);
+        // for away part, it is the same as home_socrecnt
+
+        double HAS_expectedgoal = expectedgoal_cal(homeTeamHomeGameCnt, home_pastgoal);
+        double HDS_expectedloss = expectedloss_cal(homeTeamHomeGameCnt, home_pastloss);
+        double AAS_expectedgoal = expectedgoal_cal(awayTeamAwayGameCnt, away_pastgoal);
+        double ADS_expectedloss = expectedloss_cal(awayTeamAwayGameCnt, away_pastloss);
+        double HAS_point = HAS(HAS_expectedgoal, HAS_meangoal);
+        double HDS_point = HDS(HDS_expectedloss, HDS_meanloss);
+        double AAS_point = AAS(AAS_expectedgoal, AAS_meangoal);
+        double ADS_point = ADS(ADS_expectedloss, ADS_meanloss);
+        double[] team_goal = expected_goal(HAS_point, HDS_point, AAS_point, ADS_point, HAS_expectedgoal, AAS_expectedgoal);
+        double away_point = away_winpoint(awayTeamAwayWinCnt, awayTeamAwayDrawCnt, awayTeamAwayGameCnt);
+        double home_point = home_winpoint(homeTeamHomeWinCnt, homeTeamHomeDrawCnt, homeTeamHomeGameCnt);
+        int homeWLPoint = totalGameWinLosePoint(homeTeamWin,homeTeamDraw,homeTeamTotalGame);
+        int awayWLPoint = totalGameWinLosePoint(awayTeamWin,awayTeamDraw,awayTeamTotalGame);
+        double[] score_ratio = gamescore_ratio(homeWLPoint, awayWLPoint);
+        double[] rank_ratio = game_rank_ratio(rank_home, rank_away);
+        int pastTenWinLoseHomePt = pastTenWinLosePt(homePastTenWin, homePastTenDraw);
+        int pastTenWinLoseAwayPt = pastTenWinLosePt(awayPastTenWin, awayPastTenDraw);
+        double[] pastTenWLRatio = pastTenWinLoseRatioCmp(pastTenWinLoseHomePt, pastTenWinLoseAwayPt);
+        double draw_rate = draw_rate(homeTeamDraw,homeTeamTotalGame,homePastTenDraw,awayPastTenDraw,awayTeamDraw,awayTeamTotalGame);
+        double[] finalWLRatio = win_rate(score_ratio[0], score_ratio[1], rank_ratio[0], rank_ratio[1],
+                pastTenWLRatio[0], pastTenWLRatio[1], home_point, away_point, draw_rate, team_goal[0], team_goal[1]);
+        double[][] allscore_prob = allScoreProbCal(home_scorecnt, away_scorecnt);
+        double[] winLosePoisson = rateCalWL(allscore_prob);
+        double[] WDLBetAmount = betWinLoseRate(finalWLRatio[0], draw_rate, finalWLRatio[1], winLosePoisson);
+        return new WinLoseResult(homeTeam, WDLBetAmount[0], WDLBetAmount[1], WDLBetAmount[2]);
+    }
+
+    public BigSmallResult predictBigSmall(TeamStatsService teamStatsService, String homeTeam, String awayTeam) {
+
+        int[] home_pastgoal = teamStatsService.ListOfHomeGoal(homeTeam);
+        int[] away_pastgoal = teamStatsService.ListOfAwayGoal(awayTeam);
+        int[] home_pastloss = teamStatsService.ListOfHomeLoss(homeTeam);
+        int[] away_pastloss = teamStatsService.ListOfAwayLoss(awayTeam);
+
+        double HAS_meangoal = teamStatsService.MeanGoalAllHome();
+        double HDS_meanloss = teamStatsService.MeanGoalAllAway();
+        double AAS_meangoal = teamStatsService.MeanGoalAllAway();
+        double ADS_meanloss = teamStatsService.MeanGoalAllHome();
+
+        double awayTeamAwayGameCnt = teamStatsService.CountAwayGameByName(awayTeam);
+        double homeTeamHomeGameCnt = teamStatsService.CountHomeGameByName(homeTeam);
+
+        double HAS_expectedgoal = expectedgoal_cal(homeTeamHomeGameCnt, home_pastgoal);
+        double HDS_expectedloss = expectedloss_cal(homeTeamHomeGameCnt, home_pastloss);
+        double AAS_expectedgoal = expectedgoal_cal(awayTeamAwayGameCnt, away_pastgoal);
+        double ADS_expectedloss = expectedloss_cal(awayTeamAwayGameCnt, away_pastloss);
+        double HAS_point = HAS(HAS_expectedgoal, HAS_meangoal);
+        double HDS_point = HDS(HDS_expectedloss, HDS_meanloss);
+        double AAS_point = AAS(AAS_expectedgoal, AAS_meangoal);
+        double ADS_point = ADS(ADS_expectedloss, ADS_meanloss);
+        double[] team_goal = expected_goal(HAS_point, HDS_point, AAS_point, ADS_point, HAS_expectedgoal, AAS_expectedgoal);
+        //double betting_small = 1000000; //select sum() from order where order.type = 'bigsmall' and order.subtype = 'big' and order.hometeam=hometeam and order.awayteam=awayteam
+        //double betting_big = 508945;
+        //double[] big_small = big_or_small(team_goal[0], team_goal[1], betting_small, betting_big);
+        return new BigSmallResult(homeTeam, team_goal[0]);
+    }
+
+    public RedYellowResult predictRedYellow(TeamStatsService teamStatsService, String homeTeam, String awayTeam) {
+        int home_yellowcard = teamStatsService.TotalYellowCard(homeTeam);
+        int home_redcard = teamStatsService.TotalRedCard(homeTeam);
+        int away_yellowcard = teamStatsService.TotalYellowCard(awayTeam);
+        int away_redcard = teamStatsService.TotalRedCard(awayTeam);
+        List<TeamStats> HomeLast10 = teamStatsService.getLast10Stat(homeTeam);
+        List<TeamStats> AwayLast10 = teamStatsService.getLast10Stat(homeTeam);
+        int pastten_homey = teamStatsService.GetLast10YellowCard(HomeLast10, homeTeam);
+        int pastten_homer = teamStatsService.GetLast10RedCard(HomeLast10, homeTeam);
+        int pastten_awayy = teamStatsService.GetLast10YellowCard(AwayLast10, awayTeam);
+        int pastten_awayr = teamStatsService.GetLast10RedCard(AwayLast10, awayTeam);
+
+
+        int homeTeamTotalGame = teamStatsService.CountTotalGameByName(homeTeam);
+        int awayTeamTotalGame = teamStatsService.CountTotalGameByName(awayTeam);
+
+        double[] allgame_mean = allCardCal(homeTeamTotalGame, awayTeamTotalGame, home_yellowcard, home_redcard, away_yellowcard, away_redcard);
+        double[] pastten_mean = pastTenCardCal(pastten_homey, pastten_homer, pastten_awayy, pastten_awayr);
+        double redYellowPt = redYellowPtCal(allgame_mean, pastten_mean);
+        return new RedYellowResult(homeTeam, redYellowPt);
+    }
+
+    public CornerResult predictCorner(TeamStatsService teamStatsService, String homeTeam, String awayTeam) {
+        int[] homeCornerCnt = teamStatsService.CountCorner(homeTeam);
+        int[] awayCornerCnt = teamStatsService.CountCorner(awayTeam);
+        double[] homeProbCorner = new double[homeCornerCnt.length];
+        double[] awayProbCorner = new double[awayCornerCnt.length];
+        double[][] cornerAllScoreProb = cornerProbCal(homeCornerCnt, awayCornerCnt, homeProbCorner, awayProbCorner);
+        double[] cornerProbGamePoisson = cornerRateCal(cornerAllScoreProb);
+        double[] cornerOdds = corner_betting_algo(cornerProbGamePoisson);
+        return new CornerResult(homeTeam,cornerOdds[0],cornerOdds[1],cornerOdds[2]);
     }
 }

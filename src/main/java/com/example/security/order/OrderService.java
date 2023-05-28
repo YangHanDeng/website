@@ -45,13 +45,11 @@ public class OrderService {
         orderRepository.save(order);
         return true;
     }
-    public OrderResponse getUserOrder(String auth){
+
+    public List<Order> getUserOrder(String auth){
         String email = extractEmailFromAuth(auth);//verify user
         User u = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
-        List<OrderHistory> empty = new ArrayList<>();
-        OrderResponse orderResponse = new OrderResponse(u.getUsername(), orderRepository.findPurchaseHistoryByEmail(email).orElse(empty));
-
-        return orderResponse;
+        return orderRepository.findOrderByEmail(email).orElse(new ArrayList<>());
     }
 
 }

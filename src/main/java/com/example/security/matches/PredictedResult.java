@@ -16,11 +16,11 @@ public class PredictedResult {
     private double drawBet;
     private double loseBet;
     private double bigSmallGamePt;
-    private double smallBettingRatio;
-    private double bigBettingRatio;
+    private double smallBettingRatio;//
+    private double bigBettingRatio;//
     private double redYellowPt;
-    private double redYellowSmallRatio;
-    private double redYellowBigRatio;
+    private double redYellowSmallRatio;//
+    private double redYellowBigRatio;//
     private double homeCornerOdd;
     private double drawCornerOdd;
     private double awayCornerOdd;
