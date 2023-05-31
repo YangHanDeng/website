@@ -22,9 +22,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpsec) throws Exception{
         httpsec.csrf().disable().authorizeHttpRequests()
                 //permit all if match patterns // in authentication controller
+                /*
                 .requestMatchers("/api/v1/auth/**").permitAll() //** Ant-style path patterns, matches zero or more 'directories' in a path
                 .requestMatchers("/api/v1/teams/**").permitAll()
                 .requestMatchers("/api/v1/test/**").permitAll()
+                */
+                .requestMatchers("/api/v1/order/**").authenticated()
                 .anyRequest().permitAll() //other requests should be authenticated
                 .and() //add new configuration
                 .sessionManagement()

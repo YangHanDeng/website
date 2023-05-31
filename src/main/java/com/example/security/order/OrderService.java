@@ -29,12 +29,22 @@ public class OrderService {
         return json.getString("sub");
     }
     private boolean validOrder(OrderRequest orderRequest){
-        return true;
+
+        if(orderRequest.getType().equals("winorloss"))
+            if(orderRequest.getSubType().equals("win") || orderRequest.getSubType().equals("draw") || orderRequest.getSubType().equals("loss"))
+                return true;
+        if(orderRequest.getType().equals("bigsmall") || orderRequest.getType().equals("cards"))
+            if(orderRequest.getSubType().equals("big")|| orderRequest.getSubType().equals("small"))
+                return true;
+        if(orderRequest.getType().equals("corners"))
+            if(orderRequest.getSubType().equals("home")|| orderRequest.getSubType().equals("same")|| orderRequest.getSubType().equals("away"))
+                return true;
+        return false;
     }
     public boolean addOrder(String auth, OrderRequest orderRequest){
         String email = extractEmailFromAuth(auth);//verify user
         var user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
-
+        System.out.println(orderRequest);
         if(!validOrder(orderRequest)) return false;// verify order
         var order = Order.builder().email(email)
                 .homeTeam(orderRequest.getHomeTeam())

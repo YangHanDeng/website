@@ -13,9 +13,13 @@ public class OrderController {
     private final OrderService orderService;
     @PostMapping("/newOrder")
     public ResponseEntity newOrder(@RequestHeader(value="authorization") String auth, @RequestBody OrderRequest orderRequest){
-        System.out.println(orderRequest + " "+ auth);
-        orderService.addOrder(auth, orderRequest);
-        return ResponseEntity.ok().build();
+        if(orderService.addOrder(auth, orderRequest)) {
+            System.out.println("true");
+            return ResponseEntity.ok().build();
+        }else{
+            System.out.println("false");
+            return ResponseEntity.badRequest().build();
+        }
     }
     @GetMapping("/MyOrder")
     public ResponseEntity<List<Order> > getUserOrder(@RequestHeader(value="authorization") String auth){
